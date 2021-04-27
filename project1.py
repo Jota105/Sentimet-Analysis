@@ -205,6 +205,13 @@ def pegasos_single_step_update(
     completed.
     """
     # Your code here
+    if label*(np.dot(current_theta,feature_vector)+current_theta_0) <=1:
+            current_theta= (1-eta*L)*current_theta + eta*label*feature_vector
+            current_theta_0 = current_theta_0 + eta*label
+    else: 
+            current_theta= (1-eta*L)*current_theta
+            current_theta_0 = current_theta_0
+    return (current_theta, current_theta_0)
     raise NotImplementedError
 
 
@@ -238,6 +245,19 @@ def pegasos(feature_matrix, labels, T, L):
     parameter, found after T iterations through the feature matrix.
     """
     # Your code here
+    n=feature_matrix.shape[1]
+    current_theta = np.zeros(n)
+    current_theta_0 = 0
+    count = 0
+    for t in range(T):
+        for i in get_order(feature_matrix.shape[0]):
+            count += 1
+            eta = 1/np.sqrt(count)
+            current_theta,current_theta_0=pegasos_single_step_update(feature_matrix[i],labels[i],L,eta,current_theta,current_theta_0)
+
+
+    return (current_theta, current_theta_0)
+
     raise NotImplementedError
 
 # Part II
